@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "176453791461",
+    "project_id": "note-b5a7c",
+    "storage_bucket": "note-b5a7c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:176453791461:android:8c0dc179537f23cc18ae0c",
+        "android_client_info": {
+          "package_name": "com.ismail.note"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBq5QWdDr6mZA1fwWC6HjsTAUk_cIvclXE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

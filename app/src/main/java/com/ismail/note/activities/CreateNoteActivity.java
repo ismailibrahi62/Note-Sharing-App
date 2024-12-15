@@ -1,0 +1,174 @@
+package com.ismail.note.activities;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.ismail.note.R;
+import com.ismail.note.model_classes.UserNotes;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
+public class CreateNoteActivity extends AppCompatActivity {
+    private TextView timeDateTextView;
+    private EditText titleEditText;
+    private EditText noteEditText;
+    private Button cancelButton;
+    private Button saveButton;
+    private DatabaseReference mDatabase;
+    private ProgressBar progressBarInCreate;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_create_note);
+
+        // Initialize Firebase Database
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        // Initialize views
+        timeDateTextView = findViewById(R.id.timeDateTextView);
+        titleEditText = findViewById(R.id.titleEditText);
+        noteEditText = findViewById(R.id.noteEditText);
+        cancelButton = findViewById(R.id.cancelButton);
+        saveButton = findViewById(R.id.saveButton);
+        progressBarInCreate = findViewById(R.id.progressBarInCreate);
+
+        displayCurrentTime();
+
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveButton.setClickable(false);
+                // Get the latest values of title and note
+                String title = titleEditText.getText().toString().trim();
+                String note = noteEditText.getText().toString().trim();
+
+                // Check if title or note is empty
+                if (title.isEmpty() || note.isEmpty()) {
+                    Toast.makeText(CreateNoteActivity.this, "Title and Note are Required", Toast.LENGTH_SHORT).show();
+                    saveButton.setClickable(true); // Re-enable the save button
+                    return; // Return to exit the method
+                }
+
+                // Show the progress bar and save the note to the database
+                progressBarInCreate.setVisibility(View.VISIBLE);
+                saveNoteToDatabase();
+            }
+        });
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CreateNoteActivity.this, NotesActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // Clear the activity stack
+                startActivity(intent);
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                finish();
+            }
+        });
+    }
+
+    private void displayCurrentTime() {
+        // Get current time
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/h:mm a", Locale.getDefault());
+        String currentTime = sdf.format(Calendar.getInstance().getTime());
+
+        // Set the current time to timeDateTextView
+        timeDateTextView.setText(currentTime);
+    }
+
+    private void saveNoteToDatabase() {
+        // Get user inputs (title and note)
+        String title = titleEditText.getText().toString().trim();
+        String note = noteEditText.getText().toString().trim();
+
+        // Check if title or note is empty
+        if (title.isEmpty() || note.isEmpty()) {
+            Toast.makeText(CreateNoteActivity.this, "Title and Note are Required", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Show the progress bar and disable buttons
+        progressBarInCreate.setVisibility(View.VISIBLE);
+        cancelButton.setClickable(false);
+        saveButton.setClickable(false);
+
+        // Get current local time and date
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/HH:mm/a", Locale.getDefault());
+        String currentTime = sdf.format(new Date());
+
+        // Get current user's ID
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        // Create a reference for the new note and get the unique ID
+        DatabaseReference notesRef = mDatabase.child("notes").child(userId).push();
+        String noteId = notesRef.getKey(); // Get the unique ID generated by Firebase
+
+        // Create a new Note object with the user's data and the generated ID
+        UserNotes noteObject = new UserNotes(noteId, title, note, currentTime);
+
+        // Save the note to the database using the generated ID
+        notesRef.setValue(noteObject)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            // Note saved successfully
+                            progressBarInCreate.setVisibility(View.GONE);
+                            View parentLayout = findViewById(android.R.id.content);
+                            Snackbar snackbar = Snackbar.make(parentLayout, "Note Created Successfully!", Snackbar.LENGTH_LONG);
+                            snackbar.getView().setBackgroundResource(R.drawable.snackbarbg); // Optional for custom background
+                            snackbar.show();
+
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    // Create intent to open NotesActivity
+                                    Intent intent = new Intent(CreateNoteActivity.this, NotesActivity.class);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // Clear the activity stack
+                                    startActivity(intent);
+                                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                                    finish(); // Finish current activity
+                                }
+                            }, 2000);
+                        } else {
+                            // Failed to save the note
+                            progressBarInCreate.setVisibility(View.GONE); // Hide the progress bar
+                            cancelButton.setClickable(true);
+                            saveButton.setClickable(true);
+                            Toast.makeText(CreateNoteActivity.this, "Failed to create note. Please try again.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(CreateNoteActivity.this, NotesActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // Clear the activity stack
+        startActivity(intent);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        finish();
+    }
+}
+

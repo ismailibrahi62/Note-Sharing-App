@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/topbar"
+        android:id="@+id/sign">
+
+        <FrameLayout
+            android:id="@+id/frame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/topbar"
+                android:scaleType="centerCrop"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/simage"
+
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="20dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="120dp"
+                android:text="SignUp"
+                android:textColor="@color/white"
+                android:textSize="30sp"
+                android:layout_marginTop="30dp"
+                />
+
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/txt1"
+            android:layout_below="@id/frame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="SignUp"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:layout_marginTop="30dp"
+            />
+        <TextView
+            android:id="@+id/txt2"
+            android:layout_below="@id/txt1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Enter your information below"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/black"
+
+            android:textSize="20sp"
+            android:layout_marginTop="30dp"
+            />
+
+
+        <!-- Email Input -->
+        <EditText
+            android:id="@+id/ed_person_name"
+            android:layout_below="@id/txt2"
+            android:layout_width="360dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:hint="your name"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:layout_centerHorizontal="true"
+            android:inputType="textPersonName"
+            android:drawableStart="@drawable/name"
+            android:paddingStart="10dp"
+            android:drawablePadding="10dp"
+            android:layout_marginTop="50dp"
+            android:background="@drawable/ed_bg"
+            />
+        <EditText
+            android:id="@+id/ed_email_signUp"
+            android:layout_below="@id/ed_person_name"
+            android:layout_width="360dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:hint="example@gmail.com"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:layout_centerHorizontal="true"
+            android:inputType="textEmailAddress"
+            android:drawableStart="@drawable/email"
+            android:paddingStart="10dp"
+            android:drawablePadding="10dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/ed_bg"
+            />
+
+
+        <EditText
+            android:id="@+id/ed_pwd_singUp"
+            android:layout_below="@+id/ed_email_signUp"
+            android:layout_width="360dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:hint="***********"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:layout_centerHorizontal="true"
+            android:inputType="textPassword"
+            android:drawableStart="@drawable/password"
+            android:paddingStart="10dp"
+            android:drawablePadding="10dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/ed_bg"
+            />
+
+        <Button
+            android:id="@+id/buttonSignUp"
+            android:layout_below="@id/ed_pwd_singUp"
+            android:layout_width="360dp"
+            android:layout_height="55dp"
+            android:layout_gravity="center"
+            android:textSize="18sp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="65dp"
+            android:background="@drawable/btn_bg"
+            android:text="SignUp"
+            android:textColor="@color/white"
+            android:textAllCaps="false"/>
+
+
+
+
+
+
+        <LinearLayout
+            android:id="@+id/linear"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/buttonSignUp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="130dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="already have an account?"
+                />
+
+            <TextView
+                android:id="@+id/tvSingIn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SignIn"
+                android:textColor="@color/primary"/>
+        </LinearLayout>
+
+        <ProgressBar
+            android:visibility="gone"
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateTint="@color/primary"
+            android:layout_centerInParent="true"/>
+
+    </RelativeLayout>
+</layout>
